@@ -1,13 +1,63 @@
 import 'package:flutter/material.dart';
 
-// Importamos las pantallas que se mostrarán en cada pestaña
+import '../theme/app_colors.dart';
 import 'historial_screen.dart';
+import 'inicio_screen.dart';
 import 'nuevo_screen.dart';
 import 'producto_screen.dart';
-import 'inicio_screen.dart';
 import 'reporte_screen.dart';
 
-// Widget principal que gestiona la navegación con BottomNavigationBar
+/// Datos de cada pestaña de la barra inferior.
+class _Seccion {
+  const _Seccion({
+    required this.titulo,
+    required this.etiqueta,
+    required this.icono,
+    required this.pantalla,
+  });
+
+  final String titulo;
+  final String etiqueta;
+  final IconData icono;
+  final Widget pantalla;
+}
+
+const _secciones = <_Seccion>[
+  _Seccion(
+    titulo: 'Inicio',
+    etiqueta: 'Inicio',
+    icono: Icons.home_outlined,
+    pantalla: InicioScreen(),
+  ),
+  _Seccion(
+    titulo: 'Productos',
+    etiqueta: 'Productos',
+    icono: Icons.hexagon_outlined,
+    pantalla: ProductoScreen(),
+  ),
+  _Seccion(
+    titulo: 'Nuevo producto',
+    etiqueta: 'Nuevo',
+    icono: Icons.add_circle_outline,
+    pantalla: NuevoScreen(),
+  ),
+  _Seccion(
+    titulo: 'Historial',
+    etiqueta: 'Historial',
+    icono: Icons.access_time,
+    pantalla: HistorialScreen(),
+  ),
+  _Seccion(
+    titulo: 'Reportes',
+    etiqueta: 'Reportes',
+    icono: Icons.description_outlined,
+    pantalla: ReporteScreen(),
+  ),
+];
+
+const _indiceProductos = 1;
+
+/// Estructura principal de la app: AppBar + pestañas con BottomNavigationBar.
 class Navegacion extends StatefulWidget {
   const Navegacion({super.key});
 
@@ -15,64 +65,40 @@ class Navegacion extends StatefulWidget {
   State<Navegacion> createState() => _NavegacionState();
 }
 
-// Estado del widget Navegacion
 class _NavegacionState extends State<Navegacion> {
-  // Índice de la pestaña seleccionada actualmente (0 = Inicio)
-  int _selectedIndex = 0;
-
-  // Lista de pantallas disponibles en la navegación
-  // El orden coincide con el orden de los ítems en BottomNavigationBar
-  final List<Widget> _widgetOptions = <Widget>[
-    const InicioScreen(),     // Índice 0: Inicio
-    const ProductoScreen(),   // Índice 1: Productos
-    const NuevoScreen(),      // Índice 2: Nuevo
-    const HistorialScreen(),  // Índice 3: Historial
-    const ReporteScreen(),    // Índice 4: Reportes
-  ];
-
-  // Método que actualiza el índice seleccionado al tocar un ítem
-  // setState() notifica al framework que el estado ha cambiado
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  /// Arrancamos en Productos, como en el mockup.
+  int _indice = _indiceProductos;
 
   @override
   Widget build(BuildContext context) {
-    // Scaffold estructura la pantalla con AppBar, body y BottomNavigationBar
     return Scaffold(
-      // AppBar muestra el título de la aplicación
-      appBar: AppBar(title: const Text('Inventario App')),
-
-      // body muestra la pantalla correspondiente al índice seleccionado
-      body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-
-      // BottomNavigationBar: barra de navegación inferior con 5 ítems
-      bottomNavigationBar: BottomNavigationBar(
-        // type.fixed permite que todos los labels sean visibles siempre
-        type: BottomNavigationBarType.fixed,
-
-        // Definición de los 5 ítems de navegación
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: 'Productos'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: 'Nuevo'),
-          BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Historial'),
-          BottomNavigationBarItem(icon: Icon(Icons.description), label: 'Reportes'),
-        ],
-
-        // Índice del ítem actualmente seleccionado
-        currentIndex: _selectedIndex,
-
-        // Color del ítem seleccionado (amarillo/dorado)
-        selectedItemColor: Colors.amber[800],
-
-        // Color de los ítems no seleccionados (gris)
-        unselectedItemColor: Colors.grey,
-
-        // Callback que se ejecuta al tocar un ítem
-        onTap: _onItemTapped,
+      appBar: AppBar(title: Text(_secciones[_indice].titulo)),
+      // IndexedStack conserva el estado de cada pestaña (p. ej. el formulario a medio llenar).
+      body: SafeArea(
+        child: IndexedStack(
+          index: _indice,
+          children: [for (final s in _secciones) s.pantalla],
+        ),
+      ),
+      bottomNavigationBar: DecoratedBox(
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: AppColors.bordeNavegacion)),
+        ),
+        // Sin efecto de onda al tocar las pestañas.
+        child: Theme(
+          data: Theme.of(context).copyWith(
+            splashFactory: NoSplash.splashFactory,
+            highlightColor: Colors.transparent,
+          ),
+          child: BottomNavigationBar(
+            currentIndex: _indice,
+            onTap: (i) => setState(() => _indice = i),
+            items: [
+              for (final s in _secciones)
+                BottomNavigationBarItem(icon: Icon(s.icono), label: s.etiqueta),
+            ],
+          ),
+        ),
       ),
     );
   }

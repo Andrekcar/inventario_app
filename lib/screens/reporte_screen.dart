@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-// Pantalla de Reportes - muestra contenido placeholder
+import '../widgets/pantalla_pendiente.dart';
+
+/// Pantalla de Reportes (pendiente de implementar).
 class ReporteScreen extends StatelessWidget {
   const ReporteScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      'Reporte',
-      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-    );
+    return const PantallaPendiente(titulo: 'Reportes');
   }
 }

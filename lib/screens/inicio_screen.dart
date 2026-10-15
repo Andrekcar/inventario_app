@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-// Pantalla de Inicio - muestra contenido placeholder
+import '../widgets/pantalla_pendiente.dart';
+
+/// Pantalla de Inicio (pendiente de implementar).
 class InicioScreen extends StatelessWidget {
   const InicioScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Text(
-      'Inicio',
-      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-    );
+    return const PantallaPendiente(titulo: 'Inicio');
   }
 }

@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 
-// Importamos la pantalla de navegación principal
 import 'screens/navegacion.dart';
+import 'state/inventario.dart';
+import 'state/inventario_scope.dart';
+import 'theme/app_theme.dart';
 
-// Punto de entrada de la aplicación Flutter
-void main() => runApp(const MyApp());
+void main() => runApp(MyApp(inventario: InventarioState()));
 
-// Widget raíz de la aplicación (StatelessWidget)
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.inventario});
+
+  final InventarioState inventario;
 
   @override
   Widget build(BuildContext context) {
-    // MaterialApp configura el tema y la ruta inicial de la app
-    return const MaterialApp(home: Navegacion());
+    return InventarioScope(
+      inventario: inventario,
+      child: MaterialApp(
+        title: 'InventarioX',
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.dark,
+        darkTheme: AppTheme.oscuro,
+        home: const Navegacion(),
+      ),
+    );
   }
 }
