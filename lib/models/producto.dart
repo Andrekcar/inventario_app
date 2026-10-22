@@ -1,6 +1,6 @@
 /// Representa un producto individual dentro del inventario.
 ///
-/// Es inmutable: para cambiar el stock se crea una copia con [copyWith].
+/// Es inmutable: para cambiar el stock se crea una copia
 class Producto {
   const Producto({
     required this.id,
